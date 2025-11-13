@@ -1,7 +1,10 @@
-<form>
+
 {%extends "base.html"%}
 
 {%block content%}
+<div class=" text-bg-secondary p-3 rounded">
+        
+<form>
     <div class="row mb-3">
     <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
@@ -16,7 +19,7 @@
   </div>
   <fieldset class="row mb-3">
     <legend class="col-form-label col-sm-2 pt-0">Radios</legend>
-    <div class="col-sm-10">
+   
      
       
    
@@ -33,4 +36,5 @@
   </div>
   <button type="submit" class="btn btn-primary">Sign in</button>
 </form>
+</div>
 {%endblock%}

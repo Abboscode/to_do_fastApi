@@ -13,9 +13,14 @@ data=[{"id":1,"task":"Do laundry"},{"id":2,"task":"Read a book"},{"id":3,"task":
 
 @app.get("/",tags=["root"])
 async def read_root(request: Request):
-    return {"message": "Welcome to the To-Do Application API. Visit /docs for API documentation."}
+    return templates.TemplateResponse("home.html", {"request":request,"current_page":"home"}) 
+
+
 app.include_router(todo_router)
 app.include_router(auth_router)
+
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="localhost", port=8000)

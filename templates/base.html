@@ -12,7 +12,41 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    <div class="container mt-4 text-bg-secondary p-3 rounded">
+{{current_page|default('home')}}
+   <ul class="nav nav-underline">
+  
+  {% if current_page=="home" %}  
+  
+  <li class="nav-item">
+      <a   class="nav-link active" aria-current="page" href="/">Home</a>
+  </li>
+  {% else %}
+   <li class="nav-item">
+    <a class="nav-link" href="/">Home</a>
+  </li>
+  {% endif %}
+  {% if current_page=="signIn" %}  
+  
+  <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#">Sign In</a>
+  </li>
+  {% else %}
+   <li class="nav-item">
+    <a class="nav-link" href="#">Sign In</a>
+  </li>
+  {% endif %}
+  {% if current_page=="signOut" %}  
+  
+  <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#">Sing Out</a>
+  </li>
+  {% else %}
+   <li class="nav-item">
+    <a class="nav-link" href="#">Sign Out</a>
+  </li>
+  {% endif %}
+</ul>
+    <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
 
