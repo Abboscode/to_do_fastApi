@@ -1,9 +1,23 @@
 from fastapi import APIRouter, Request
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,JSONResponse
+from fastapi.encoders import jsonable_encoder
 route = APIRouter(prefix="/todos", tags=["todos"])
-
+data=[ {
+      "id": 1,
+      "title": "Complete project proposal",
+      "description": "Write and submit the Q4 project proposal to the team",
+      "dateAdded": "2024-11-10",
+      "completed": False,
+    },
+    {
+      "id": 2,
+      "title": "Buy groceries",
+      "description": "Milk, eggs, bread, and vegetables",
+      "dateAdded": "2024-11-12",
+      "completed": True,
+    },]
 # 1. Start from the current file (router.py)
 router_file_path = Path(__file__).resolve()
 
@@ -16,8 +30,8 @@ templates_dir = project_root / "templates"
 
 # 4. Initialize Jinja2Templates
 templates = Jinja2Templates(directory=str(templates_dir))
-data=[{"id":1,"task":"Do laundry"},{"id":2,"task":"Read a book"},{"id":3,"task":"Write code"},{"id":4,"task":"Go for a walk"},{"id":5,"task":"Cook dinner"}]
+json_data=jsonable_encoder(data)
 
 @route.get("/",response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("todo.html", {"request":request ,"todos":data})
+        return JSONResponse(content=json_data)

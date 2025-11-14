@@ -9,7 +9,7 @@ app = FastAPI(title="To-Do Application", description="A simple to-do application
 templates= Jinja2Templates(directory="../templates")
 
 
-data=[{"id":1,"task":"Do laundry"},{"id":2,"task":"Read a book"},{"id":3,"task":"Write code"},{"id":4,"task":"Go for a walk"},{"id":5,"task":"Cook dinner"}]
+
 
 @app.get("/",tags=["root"])
 async def read_root(request: Request):
