@@ -14,7 +14,7 @@ data=[ {
     {
       "id": 2,
       "title": "Buy groceries",
-      "description": "Milk, eggs, bread, and vegetables",
+      "description": "Bear, eggs, bread, and vegetables",
       "dateAdded": "2024-11-12",
       "completed": True,
     },]

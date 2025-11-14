@@ -4,7 +4,20 @@ from fastapi.responses import HTMLResponse
 from todo.router import route as todo_router
 from auth.router import route as auth_router
 
+
 app = FastAPI(title="To-Do Application", description="A simple to-do application using FastAPI and Jinja2", version="1.0.0")
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],        # or ["http://localhost:5173"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 # Initialize Jinja2 templates
 templates= Jinja2Templates(directory="../templates")
 
