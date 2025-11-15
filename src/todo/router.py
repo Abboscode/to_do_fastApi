@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from typing import Annotated
 from fastapi import APIRouter, Depends,Request
 from pathlib import Path
@@ -6,7 +7,7 @@ from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from  .models import TodoModel
 from datetime import datetime as Data
 from .schemas import TodoCreate
@@ -73,8 +74,9 @@ async def add_tddo(data:TodoCreate,session: AsyncSession = Depends(get_session))
         )
         session.add(new_todo)
         await session.commit()
+        await session.refresh(new_todo)
 
-        return JSONResponse(content={"message":"Todo created successfully"})
+        return new_todo
 
       
 @route.get("/todos/{todo_id}",response_class=HTMLResponse)
@@ -83,3 +85,32 @@ async def read_todo(request: Request,todo_id:int):
             if todo["id"]==todo_id:
                 return JSONResponse(content=jsonable_encoder(todo))
         return JSONResponse(content={"message":"Todo not found"},status_code=404)
+
+
+@route.delete("/delete/{todo_id}")
+async def delete_todo(todo_id:int,session:SessionDep):
+        # 1. Construct the DELETE statement
+        # We use sqlalchemy.delete() with .where()
+        stmt=delete(TodoModel).where(TodoModel.id==todo_id)
+       # 2. Execute the statement
+       # session.execute() returns a Result object
+        result=await session.execute(stmt)
+        
+    
+    # 3. Commit the transaction to apply the changes
+        await session.commit()
+        delete_todo=result.rowcount
+
+        if delete_todo==0:
+            # If no rows were deleted, the todo item was not found
+        # Raising an HTTPException is the standard FastAPI way for errors
+            raise HTTPException(
+            status_code=404, 
+            detail=f"Todo with ID {todo_id} not found"
+        )
+        
+    # 5. If successful (rows_deleted > 0), return a success message
+        return JSONResponse(
+        content={"message": f"Todo with ID {todo_id} successfully deleted"},
+        status_code=200
+    )
