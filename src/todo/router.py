@@ -1,3 +1,4 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends,Request
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
@@ -7,6 +8,8 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from  .models import TodoModel
+from datetime import datetime as Data
+from .schemas import TodoCreate
 
 route = APIRouter(prefix="/todos", tags=["todos"])
 
@@ -37,7 +40,7 @@ async def get_session():
     async with new_session_maker() as session:
         yield session
       
-
+SessionDep=Annotated[AsyncSession,Depends(get_session)]
 
 @route.get("/todos")
 async def read_todos(
@@ -58,8 +61,19 @@ async def read_todos(
     # 3. Return the JSON-compatible data
     return json_data
 
-@route.post("/add",response_class=HTMLResponse)
-async def add_tddo(request: Request):
+@route.post("/add")
+async def add_tddo(data:TodoCreate,session: AsyncSession = Depends(get_session)):
+        
+         
+        new_todo=TodoModel(
+            title=data.title,
+            dateAdded=Data.now().strftime("%Y-%m-%d %H:%M:%S"),
+            description=data.description,
+            completed=data.completed
+        )
+        session.add(new_todo)
+        await session.commit()
+
         return JSONResponse(content={"message":"Todo created successfully"})
 
       
