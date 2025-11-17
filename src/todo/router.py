@@ -79,16 +79,11 @@ async def add_tddo(data:TodoCreate,session: AsyncSession = Depends(get_session))
         return new_todo
 
       
-@route.get("/todos/{todo_id}",response_class=HTMLResponse)
-async def read_todo(request: Request,todo_id:int):
-        for todo in data:
-            if todo["id"]==todo_id:
-                return JSONResponse(content=jsonable_encoder(todo))
-        return JSONResponse(content={"message":"Todo not found"},status_code=404)
+
 
 
 @route.delete("/delete/{todo_id}")
-async def delete_todo(todo_id:int,session:SessionDep):
+async def delete_todo(todo_id:int,session:SessionDep)-> JSONResponse:
         # 1. Construct the DELETE statement
         # We use sqlalchemy.delete() with .where()
         stmt=delete(TodoModel).where(TodoModel.id==todo_id)
